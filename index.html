@@ -2,138 +2,88 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="Track life's pleasures - intimacy, food, rest, and more">
   <meta name="theme-color" content="#dc2626">
   <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="7 Pleasures">
-  
   <title>7 Pleasures</title>
-  
-  <!-- PWA Manifest -->
-  <link rel="manifest" href="/manifest.json">
-  
-  <!-- Favicon -->
+  <link rel="manifest" href="./manifest.json">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>😈</text></svg>">
-  
-  <!-- Apple Touch Icon -->
-  <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>😈</text></svg>">
-  
-  <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
-  
-  <!-- React and ReactDOM -->
   <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
   <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
-  
-  <!-- Babel Standalone for JSX -->
-  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-  
-  <!-- Lucide Icons -->
-  <script src="https://unpkg.com/lucide@latest"></script>
-  
   <style>
-    * {
-      -webkit-tap-highlight-color: transparent;
-    }
-    
-    body {
-      margin: 0;
-      padding: 0;
-      overflow-x: hidden;
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
-      -webkit-font-smoothing: antialiased;
-      -moz-osx-font-smoothing: grayscale;
-    }
-    
-    /* Hide scrollbar but allow scrolling */
-    ::-webkit-scrollbar {
-      width: 0px;
-      background: transparent;
-    }
-    
-    /* iOS specific fixes */
-    @supports (-webkit-touch-callout: none) {
-      .min-h-screen {
-        min-height: -webkit-fill-available;
-      }
-    }
+    * { -webkit-tap-highlight-color: transparent; }
+    body { margin: 0; padding: 0; overflow-x: hidden; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; }
+    ::-webkit-scrollbar { width: 0px; }
   </style>
 </head>
 <body>
   <div id="root"></div>
-
-  <!-- Install Prompt -->
-  <div id="install-prompt" style="display: none; position: fixed; bottom: 20px; left: 20px; right: 20px; background: linear-gradient(135deg, #dc2626, #ec4899); padding: 16px; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.5); z-index: 9999; color: white;">
-    <div style="display: flex; align-items: center; gap: 12px;">
-      <div style="font-size: 32px;">😈</div>
-      <div style="flex: 1;">
-        <div style="font-weight: bold; margin-bottom: 4px;">Install 7 Pleasures</div>
-        <div style="font-size: 14px; opacity: 0.9;">Add to your home screen for easy access</div>
-      </div>
-      <button id="install-button" style="background: white; color: #dc2626; padding: 8px 16px; border-radius: 8px; font-weight: bold; border: none; cursor: pointer;">
-        Install
-      </button>
-      <button id="dismiss-button" style="background: transparent; color: white; padding: 8px; border: none; cursor: pointer; font-size: 20px;">
-        ×
-      </button>
-    </div>
-  </div>
-
-  <script type="text/babel" data-type="module">
-    const { Calendar, Heart, TrendingUp, BarChart3, Plus, Download, Upload, User, Share2, X, Check } = lucide;
-
-    // Your React component code here (embedded from sins-tracker-pwa.jsx)
-    const SinsTrackerPWA = () => {
-      const [currentSin, setCurrentSin] = React.useState('lust');
-      const [entries, setEntries] = React.useState([]);
-      const [showAddForm, setShowAddForm] = React.useState(false);
-      const [currentUser, setCurrentUser] = React.useState('');
-      const [showUserSetup, setShowUserSetup] = React.useState(true);
-      const [showSyncMenu, setShowSyncMenu] = React.useState(false);
-      
-      const [newEntry, setNewEntry] = React.useState({
+  <script>
+    const { useState, useEffect, createElement: h } = React;
+    
+    const positions = [
+      { name: 'Missionary', emoji: '🛏️' },
+      { name: 'Cowgirl', emoji: '🤠' },
+      { name: 'Reverse Cowgirl', emoji: '🔄' },
+      { name: 'Doggy Style', emoji: '🐕' },
+      { name: 'Spooning', emoji: '🥄' },
+      { name: 'Standing', emoji: '🧍' },
+      { name: '69', emoji: '♋' },
+      { name: 'Oral (Giving)', emoji: '👅' },
+      { name: 'Oral (Receiving)', emoji: '😌' },
+      { name: 'Legs Up', emoji: '🦵' },
+      { name: 'Butterfly', emoji: '🦋' },
+      { name: 'Lotus', emoji: '🪷' },
+      { name: 'Side by Side', emoji: '↔️' },
+      { name: 'Against Wall', emoji: '🧱' },
+      { name: 'Seated', emoji: '🪑' },
+      { name: 'Other/Custom', emoji: '✨' }
+    ];
+    
+    const durationOptions = ['5-10 min', '10-20 min', '20-30 min', '30-45 min', '45+ min'];
+    const tagOptions = ['Romantic', 'Spontaneous', 'Planned', 'Morning', 'Evening', 'Night', 'Adventurous', 'Gentle', 'Passionate', 'Quickie'];
+    
+    function App() {
+      const [currentUser, setCurrentUser] = useState('');
+      const [showUserSetup, setShowUserSetup] = useState(true);
+      const [entries, setEntries] = useState([]);
+      const [showAddForm, setShowAddForm] = useState(false);
+      const [showSyncMenu, setShowSyncMenu] = useState(false);
+      const [newEntry, setNewEntry] = useState({
         date: new Date().toISOString().split('T')[0],
         position: '',
         myRating: 5,
         duration: '',
         notes: '',
-        tags: [],
-        user: ''
+        tags: []
       });
-
-      const positions = [
-        { name: 'Missionary', emoji: '🛏️', category: 'classic' },
-        { name: 'Cowgirl', emoji: '🤠', category: 'classic' },
-        { name: 'Reverse Cowgirl', emoji: '🔄', category: 'classic' },
-        { name: 'Doggy Style', emoji: '🐕', category: 'classic' },
-        { name: 'Spooning', emoji: '🥄', category: 'intimate' },
-        { name: 'Standing', emoji: '🧍', category: 'adventurous' },
-        { name: '69', emoji: '♋', category: 'oral' },
-        { name: 'Oral (Giving)', emoji: '👅', category: 'oral' },
-        { name: 'Oral (Receiving)', emoji: '😌', category: 'oral' },
-        { name: 'Legs Up', emoji: '🦵', category: 'adventurous' },
-        { name: 'Butterfly', emoji: '🦋', category: 'adventurous' },
-        { name: 'Lotus', emoji: '🪷', category: 'intimate' },
-        { name: 'Side by Side', emoji: '↔️', category: 'intimate' },
-        { name: 'Against Wall', emoji: '🧱', category: 'adventurous' },
-        { name: 'Seated', emoji: '🪑', category: 'intimate' },
-        { name: 'Other/Custom', emoji: '✨', category: 'other' }
-      ];
-
-      const durationOptions = ['5-10 min', '10-20 min', '20-30 min', '30-45 min', '45+ min'];
-      const tagOptions = ['Romantic', 'Spontaneous', 'Planned', 'Morning', 'Evening', 'Night', 'Adventurous', 'Gentle', 'Passionate', 'Quickie'];
-
-      React.useEffect(() => {
+      
+      useEffect(() => {
         const savedUser = localStorage.getItem('7pleasures_current_user');
         if (savedUser) {
           setCurrentUser(savedUser);
           setShowUserSetup(false);
           loadEntries();
         }
-      }, [currentSin]);
-
+      }, []);
+      
+      const loadEntries = () => {
+        const stored = localStorage.getItem('7pleasures_intimacy_all');
+        if (stored) {
+          setEntries(JSON.parse(stored));
+        }
+      };
+      
+      const saveEntries = (updatedEntries) => {
+        localStorage.setItem('7pleasures_intimacy_all', JSON.stringify(updatedEntries));
+        setEntries(updatedEntries);
+      };
+      
       const setupUser = (userName) => {
         if (!userName.trim()) return;
         localStorage.setItem('7pleasures_current_user', userName);
@@ -141,26 +91,7 @@
         setShowUserSetup(false);
         loadEntries();
       };
-
-      const switchUser = () => {
-        setShowUserSetup(true);
-        setCurrentUser('');
-      };
-
-      const loadEntries = () => {
-        const stored = localStorage.getItem(`7pleasures_${currentSin}_all`);
-        if (stored) {
-          setEntries(JSON.parse(stored));
-        } else {
-          setEntries([]);
-        }
-      };
-
-      const saveEntries = (updatedEntries) => {
-        localStorage.setItem(`7pleasures_${currentSin}_all`, JSON.stringify(updatedEntries));
-        setEntries(updatedEntries);
-      };
-
+      
       const addEntry = () => {
         if (!newEntry.position) {
           alert('Please select a position/activity');
@@ -180,22 +111,20 @@
           myRating: 5,
           duration: '',
           notes: '',
-          tags: [],
-          user: currentUser
+          tags: []
         });
         setShowAddForm(false);
       };
-
+      
       const deleteEntry = (id) => {
         if (confirm('Delete this entry?')) {
           saveEntries(entries.filter(e => e.id !== id));
         }
       };
-
+      
       const exportData = () => {
         const dataToExport = {
           user: currentUser,
-          sin: currentSin,
           entries: entries,
           exportDate: new Date().toISOString()
         };
@@ -204,15 +133,14 @@
         const url = URL.createObjectURL(dataBlob);
         const link = document.createElement('a');
         link.href = url;
-        link.download = `7pleasures_${currentSin}_${currentUser}_${new Date().toISOString().split('T')[0]}.json`;
+        link.download = `7pleasures_${currentUser}_${new Date().toISOString().split('T')[0]}.json`;
         link.click();
         URL.revokeObjectURL(url);
       };
-
+      
       const importData = (event) => {
         const file = event.target.files[0];
         if (!file) return;
-        
         const reader = new FileReader();
         reader.onload = (e) => {
           try {
@@ -224,562 +152,305 @@
                 new Date(b.timestamp) - new Date(a.timestamp)
               );
               saveEntries(merged);
-              alert(`Successfully imported ${newEntries.length} new entries from ${imported.user || 'partner'}!`);
+              alert(`Imported ${newEntries.length} entries from ${imported.user}!`);
             }
           } catch (error) {
-            alert('Error importing data. Please check the file format.');
+            alert('Error importing file');
           }
         };
         reader.readAsText(file);
       };
-
+      
       const getStats = () => {
         if (entries.length === 0) return null;
-
         const thisYear = new Date().getFullYear();
         const yearEntries = entries.filter(e => new Date(e.date).getFullYear() === thisYear);
-        
         const myEntries = yearEntries.filter(e => e.user === currentUser);
         const partnerEntries = yearEntries.filter(e => e.user !== currentUser);
         const partnerName = partnerEntries.length > 0 ? partnerEntries[0].user : 'Partner';
-        
         const myAvg = myEntries.length > 0 ? (myEntries.reduce((sum, e) => sum + e.myRating, 0) / myEntries.length).toFixed(1) : 0;
         const partnerAvg = partnerEntries.length > 0 ? (partnerEntries.reduce((sum, e) => sum + e.myRating, 0) / partnerEntries.length).toFixed(1) : 0;
-        
-        const myPositionCounts = {};
-        myEntries.forEach(e => {
-          myPositionCounts[e.position] = (myPositionCounts[e.position] || 0) + 1;
-        });
-        
-        const partnerPositionCounts = {};
-        partnerEntries.forEach(e => {
-          partnerPositionCounts[e.position] = (partnerPositionCounts[e.position] || 0) + 1;
-        });
-        
-        const myTopPositions = Object.entries(myPositionCounts)
-          .sort((a, b) => b[1] - a[1])
-          .slice(0, 5);
-        
-        const partnerTopPositions = Object.entries(partnerPositionCounts)
-          .sort((a, b) => b[1] - a[1])
-          .slice(0, 5);
-
-        const myFavorites = [...myEntries]
-          .sort((a, b) => b.myRating - a.myRating)
-          .slice(0, 3);
-        
-        const partnerFavorites = [...partnerEntries]
-          .sort((a, b) => b.myRating - a.myRating)
-          .slice(0, 3);
-
-        const monthCounts = {};
-        yearEntries.forEach(e => {
-          const month = new Date(e.date).getMonth();
-          monthCounts[month] = (monthCounts[month] || 0) + 1;
-        });
-
-        return {
-          total: yearEntries.length,
-          myTotal: myEntries.length,
-          partnerTotal: partnerEntries.length,
-          myAvg,
-          partnerAvg,
-          partnerName,
-          myTopPositions,
-          partnerTopPositions,
-          myFavorites,
-          partnerFavorites,
-          monthCounts
-        };
+        const myFavorites = [...myEntries].sort((a, b) => b.myRating - a.myRating).slice(0, 3);
+        const partnerFavorites = [...partnerEntries].sort((a, b) => b.myRating - a.myRating).slice(0, 3);
+        return { total: yearEntries.length, myTotal: myEntries.length, partnerTotal: partnerEntries.length, myAvg, partnerAvg, partnerName, myFavorites, partnerFavorites };
       };
-
+      
       const stats = getStats();
-      const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-
+      
       if (showUserSetup) {
-        return (
-          <div className="min-h-screen bg-gradient-to-br from-purple-900 via-red-900 to-black text-white flex items-center justify-center p-4">
-            <div className="bg-gradient-to-br from-gray-900/90 to-gray-800/90 backdrop-blur-sm p-8 rounded-2xl border border-gray-700 max-w-md w-full">
-              <div className="text-center mb-6">
-                <div className="text-6xl mb-4">😈</div>
-                <h1 className="text-3xl font-bold mb-2">7 Pleasures</h1>
-                <p className="text-gray-400">Track what brings you joy</p>
-              </div>
-              <p className="text-sm text-gray-400 mb-6">Who's tracking today?</p>
-              <input
-                type="text"
-                placeholder="Enter your name"
-                onKeyPress={(e) => e.key === 'Enter' && setupUser(e.target.value)}
-                className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 mb-4 text-lg"
-                autoFocus
-              />
-              <button
-                onClick={(e) => {
-                  const input = e.target.previousElementSibling;
-                  setupUser(input.value);
-                }}
-                className="w-full bg-gradient-to-r from-pink-600 to-red-600 hover:from-pink-700 hover:to-red-700 py-3 rounded-lg font-semibold transition-all"
-              >
-                Start Tracking
-              </button>
-              <p className="text-xs text-gray-500 text-center mt-4">
-                Your data is stored locally on your device
-              </p>
-            </div>
-          </div>
+        return h('div', { className: 'min-h-screen bg-gradient-to-br from-purple-900 via-red-900 to-black text-white flex items-center justify-center p-4' },
+          h('div', { className: 'bg-gray-900/90 p-8 rounded-2xl border border-gray-700 max-w-md w-full' },
+            h('div', { className: 'text-center mb-6' },
+              h('div', { className: 'text-6xl mb-4' }, '😈'),
+              h('h1', { className: 'text-3xl font-bold mb-2' }, '7 Pleasures'),
+              h('p', { className: 'text-gray-400 mb-4' }, 'Track what brings you joy')
+            ),
+            h('p', { className: 'text-sm text-gray-400 mb-4' }, "Who's tracking today?"),
+            h('input', {
+              type: 'text',
+              placeholder: 'Enter your name',
+              id: 'userName',
+              onKeyPress: (e) => e.key === 'Enter' && setupUser(e.target.value),
+              className: 'w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 mb-4 text-lg text-white',
+              autoFocus: true
+            }),
+            h('button', {
+              onClick: () => setupUser(document.getElementById('userName').value),
+              className: 'w-full bg-gradient-to-r from-pink-600 to-red-600 hover:from-pink-700 hover:to-red-700 py-3 rounded-lg font-semibold'
+            }, 'Start Tracking'),
+            h('p', { className: 'text-xs text-gray-500 text-center mt-4' }, 'Data stored locally on your device')
+          )
         );
       }
-
-      return (
-        <div className="min-h-screen bg-gradient-to-br from-purple-900 via-red-900 to-black text-white pb-20">
-          <div className="max-w-6xl mx-auto p-4">
-            <div className="flex justify-between items-center py-4 mb-4">
-              <div>
-                <h1 className="text-2xl font-bold">7 Pleasures</h1>
-                <p className="text-xs text-gray-400">Track what brings you joy</p>
-                <p className="text-sm text-purple-300">Tracking as: {currentUser}</p>
-              </div>
-              <div className="flex gap-2">
-                <button
-                  onClick={() => setShowSyncMenu(!showSyncMenu)}
-                  className="bg-gray-800 hover:bg-gray-700 p-2 rounded-lg transition-all"
-                  title="Sync Data"
-                >
-                  <lucide.Share2 size={20} />
-                </button>
-                <button
-                  onClick={switchUser}
-                  className="bg-gray-800 hover:bg-gray-700 p-2 rounded-lg transition-all"
-                  title="Switch User"
-                >
-                  <lucide.User size={20} />
-                </button>
-              </div>
-            </div>
-
-            {showSyncMenu && (
-              <div className="bg-gradient-to-br from-gray-900/95 to-gray-800/95 backdrop-blur-sm p-4 rounded-xl border border-gray-700 mb-4">
-                <div className="flex justify-between items-center mb-4">
-                  <h3 className="font-bold">Sync Data</h3>
-                  <button onClick={() => setShowSyncMenu(false)}>
-                    <lucide.X size={20} />
-                  </button>
-                </div>
-                <div className="grid grid-cols-2 gap-3">
-                  <button
-                    onClick={exportData}
-                    className="bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 py-3 rounded-lg font-semibold flex items-center justify-center gap-2 transition-all"
-                  >
-                    <lucide.Download size={16} />
-                    Export My Data
-                  </button>
-                  <label className="bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 py-3 rounded-lg font-semibold flex items-center justify-center gap-2 transition-all cursor-pointer">
-                    <lucide.Upload size={16} />
-                    Import Partner's Data
-                    <input
-                      type="file"
-                      accept=".json"
-                      onChange={importData}
-                      className="hidden"
-                    />
-                  </label>
-                </div>
-                <p className="text-xs text-gray-400 mt-3">
-                  Export your data and share the file with your partner. They can import it to merge your entries together.
-                </p>
-              </div>
-            )}
-
-            <div className="flex gap-2 mb-6 overflow-x-auto pb-2">
-              {[
-                { id: 'lust', name: '💋 Intimacy', color: 'from-red-600 to-pink-600' },
-                { id: 'gluttony', name: '🍽️ Food', color: 'from-orange-600 to-yellow-600', disabled: true },
-                { id: 'greed', name: '💰 Wealth', color: 'from-green-600 to-emerald-600', disabled: true },
-                { id: 'sloth', name: '😴 Rest', color: 'from-blue-600 to-cyan-600', disabled: true },
-                { id: 'wrath', name: '⚡ Energy', color: 'from-red-700 to-orange-700', disabled: true },
-                { id: 'envy', name: '💚 Growth', color: 'from-teal-600 to-green-600', disabled: true },
-                { id: 'pride', name: '👑 Achievement', color: 'from-purple-600 to-indigo-600', disabled: true }
-              ].map(sin => (
-                <button
-                  key={sin.id}
-                  onClick={() => !sin.disabled && setCurrentSin(sin.id)}
-                  disabled={sin.disabled}
-                  className={`px-4 py-2 rounded-lg font-semibold whitespace-nowrap transition-all ${
-                    currentSin === sin.id
-                      ? `bg-gradient-to-r ${sin.color} shadow-lg scale-105`
-                      : sin.disabled
-                      ? 'bg-gray-800 text-gray-500 cursor-not-allowed'
-                      : 'bg-gray-800 hover:bg-gray-700'
-                  }`}
-                >
-                  {sin.name}
-                  {sin.disabled && <span className="ml-2 text-xs">(Soon)</span>}
-                </button>
-              ))}
-            </div>
-
-            {currentSin === 'lust' && (
-              <>
-                {stats && (
-                  <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-6">
-                    <div className="bg-gradient-to-br from-red-600/20 to-pink-600/20 backdrop-blur-sm p-4 rounded-xl border border-red-500/30">
-                      <div className="flex items-center gap-2 mb-1">
-                        <lucide.Calendar size={16} className="text-pink-400" />
-                        <h3 className="text-xs font-semibold text-pink-300">Total This Year</h3>
-                      </div>
-                      <p className="text-2xl font-bold">{stats.total}</p>
-                    </div>
-
-                    <div className="bg-gradient-to-br from-purple-600/20 to-pink-600/20 backdrop-blur-sm p-4 rounded-xl border border-purple-500/30">
-                      <div className="flex items-center gap-2 mb-1">
-                        <lucide.Heart size={16} className="text-purple-400" />
-                        <h3 className="text-xs font-semibold text-purple-300">My Entries</h3>
-                      </div>
-                      <p className="text-2xl font-bold">{stats.myTotal}</p>
-                      <p className="text-xs text-purple-300">Avg: {stats.myAvg}/10</p>
-                    </div>
-
-                    <div className="bg-gradient-to-br from-pink-600/20 to-red-600/20 backdrop-blur-sm p-4 rounded-xl border border-pink-500/30">
-                      <div className="flex items-center gap-2 mb-1">
-                        <lucide.Heart size={16} className="text-pink-400" />
-                        <h3 className="text-xs font-semibold text-pink-300">{stats.partnerName}</h3>
-                      </div>
-                      <p className="text-2xl font-bold">{stats.partnerTotal}</p>
-                      <p className="text-xs text-pink-300">Avg: {stats.partnerAvg}/10</p>
-                    </div>
-
-                    <div className="bg-gradient-to-br from-red-600/20 to-orange-600/20 backdrop-blur-sm p-4 rounded-xl border border-red-500/30">
-                      <div className="flex items-center gap-2 mb-1">
-                        <lucide.TrendingUp size={16} className="text-orange-400" />
-                        <h3 className="text-xs font-semibold text-orange-300">Monthly Avg</h3>
-                      </div>
-                      <p className="text-2xl font-bold">
-                        {(stats.total / (new Date().getMonth() + 1)).toFixed(1)}
-                      </p>
-                    </div>
-                  </div>
-                )}
-
-                {stats && stats.partnerTotal > 0 && (
-                  <div className="bg-gradient-to-br from-gray-900/80 to-gray-800/80 backdrop-blur-sm p-6 rounded-xl border border-gray-700 mb-6">
-                    <h3 className="text-xl font-bold mb-4 flex items-center gap-2">
-                      <lucide.BarChart3 size={20} className="text-pink-400" />
-                      Comparison: What We Both Enjoy
-                    </h3>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                      <div>
-                        <h4 className="text-sm font-semibold text-purple-300 mb-3">My Top Rated</h4>
-                        <div className="space-y-2">
-                          {stats.myFavorites.map((fav, idx) => (
-                            <div key={idx} className="bg-gray-800/50 p-3 rounded-lg">
-                              <div className="flex justify-between items-center">
-                                <span className="font-medium">{fav.position}</span>
-                                <div className="flex items-center gap-1">
-                                  <lucide.Heart size={16} className="text-purple-400 fill-purple-400" />
-                                  <span className="text-purple-400 font-bold">{fav.myRating}/10</span>
-                                </div>
-                              </div>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-
-                      <div>
-                        <h4 className="text-sm font-semibold text-pink-300 mb-3">{stats.partnerName}'s Top Rated</h4>
-                        <div className="space-y-2">
-                          {stats.partnerFavorites.map((fav, idx) => (
-                            <div key={idx} className="bg-gray-800/50 p-3 rounded-lg">
-                              <div className="flex justify-between items-center">
-                                <span className="font-medium">{fav.position}</span>
-                                <div className="flex items-center gap-1">
-                                  <lucide.Heart size={16} className="text-pink-400 fill-pink-400" />
-                                  <span className="text-pink-400 font-bold">{fav.myRating}/10</span>
-                                </div>
-                              </div>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                )}
-
-                <button
-                  onClick={() => setShowAddForm(!showAddForm)}
-                  className="fixed bottom-6 right-6 bg-gradient-to-r from-pink-600 to-red-600 hover:from-pink-700 hover:to-red-700 p-4 rounded-full shadow-2xl flex items-center justify-center gap-2 transition-all z-50 group"
-                >
-                  {showAddForm ? <lucide.X size={24} /> : <lucide.Plus size={24} />}
-                  <span className="max-w-0 overflow-hidden group-hover:max-w-xs transition-all duration-300 whitespace-nowrap">
-                    {showAddForm ? 'Cancel' : 'Add Entry'}
-                  </span>
-                </button>
-
-                {showAddForm && (
-                  <div className="bg-gradient-to-br from-gray-900/95 to-gray-800/95 backdrop-blur-sm p-6 rounded-xl border border-gray-700 mb-6">
-                    <h3 className="text-2xl font-bold mb-4">New Entry</h3>
-                    
-                    <div className="mb-4">
-                      <label className="block text-sm font-medium mb-2">Date</label>
-                      <input
-                        type="date"
-                        value={newEntry.date}
-                        onChange={(e) => setNewEntry({ ...newEntry, date: e.target.value })}
-                        className="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-white"
-                      />
-                    </div>
-
-                    <div className="mb-4">
-                      <label className="block text-sm font-medium mb-2">Position/Activity *</label>
-                      <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-2">
-                        {positions.map(pos => (
-                          <button
-                            key={pos.name}
-                            type="button"
-                            onClick={() => setNewEntry({ ...newEntry, position: pos.name })}
-                            className={`p-3 rounded-lg border-2 transition-all ${
-                              newEntry.position === pos.name
-                                ? 'border-pink-500 bg-pink-600/30 scale-105'
-                                : 'border-gray-700 bg-gray-800 hover:border-gray-600'
-                            }`}
-                          >
-                            <div className="text-3xl mb-1">{pos.emoji}</div>
-                            <div className="text-xs font-medium">{pos.name}</div>
-                          </button>
-                        ))}
-                      </div>
-                    </div>
-
-                    {newEntry.position === 'Other/Custom' && (
-                      <div className="mb-4">
-                        <input
-                          type="text"
-                          placeholder="Enter custom position..."
-                          onChange={(e) => setNewEntry({ ...newEntry, position: e.target.value || 'Other/Custom' })}
-                          className="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-white"
-                        />
-                      </div>
-                    )}
-
-                    <div className="mb-4">
-                      <label className="block text-sm font-medium mb-2">
-                        My Rating: {newEntry.myRating}/10
-                      </label>
-                      <div className="flex gap-1">
-                        {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(num => (
-                          <button
-                            key={num}
-                            type="button"
-                            onClick={() => setNewEntry({ ...newEntry, myRating: num })}
-                            className={`flex-1 py-3 rounded-lg font-bold transition-all ${
-                              newEntry.myRating >= num
-                                ? 'bg-gradient-to-r from-pink-600 to-red-600 text-white scale-105'
-                                : 'bg-gray-800 text-gray-500 hover:bg-gray-700'
-                            }`}
-                          >
-                            {num}
-                          </button>
-                        ))}
-                      </div>
-                    </div>
-
-                    <div className="mb-4">
-                      <label className="block text-sm font-medium mb-2">Duration</label>
-                      <div className="grid grid-cols-3 sm:grid-cols-5 gap-2">
-                        {durationOptions.map(dur => (
-                          <button
-                            key={dur}
-                            type="button"
-                            onClick={() => setNewEntry({ ...newEntry, duration: dur })}
-                            className={`py-2 px-3 rounded-lg text-sm font-medium transition-all ${
-                              newEntry.duration === dur
-                                ? 'bg-purple-600 text-white'
-                                : 'bg-gray-800 text-gray-300 hover:bg-gray-700'
-                            }`}
-                          >
-                            {dur}
-                          </button>
-                        ))}
-                      </div>
-                    </div>
-
-                    <div className="mb-4">
-                      <label className="block text-sm font-medium mb-2">Tags (tap to select multiple)</label>
-                      <div className="flex flex-wrap gap-2">
-                        {tagOptions.map(tag => (
-                          <button
-                            key={tag}
-                            type="button"
-                            onClick={() => {
-                              const tags = newEntry.tags || [];
-                              if (tags.includes(tag)) {
-                                setNewEntry({ ...newEntry, tags: tags.filter(t => t !== tag) });
-                              } else {
-                                setNewEntry({ ...newEntry, tags: [...tags, tag] });
-                              }
-                            }}
-                            className={`py-2 px-4 rounded-full text-sm font-medium transition-all ${
-                              newEntry.tags?.includes(tag)
-                                ? 'bg-pink-600 text-white'
-                                : 'bg-gray-800 text-gray-300 hover:bg-gray-700'
-                            }`}
-                          >
-                            {newEntry.tags?.includes(tag) && '✓ '}
-                            {tag}
-                          </button>
-                        ))}
-                      </div>
-                    </div>
-
-                    <div className="mb-4">
-                      <label className="block text-sm font-medium mb-2">Notes (optional)</label>
-                      <textarea
-                        value={newEntry.notes}
-                        onChange={(e) => setNewEntry({ ...newEntry, notes: e.target.value })}
-                        placeholder="Any additional details..."
-                        rows="3"
-                        className="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-white"
-                      />
-                    </div>
-
-                    <button
-                      onClick={addEntry}
-                      className="w-full bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 py-3 rounded-lg font-semibold transition-all flex items-center justify-center gap-2"
-                    >
-                      <lucide.Check size={20} />
-                      Save Entry
-                    </button>
-                  </div>
-                )}
-
-                <div className="bg-gradient-to-br from-gray-900/80 to-gray-800/80 backdrop-blur-sm p-6 rounded-xl border border-gray-700">
-                  <h3 className="text-xl font-bold mb-4">All Entries</h3>
-                  {entries.length === 0 ? (
-                    <div className="text-center py-12">
-                      <div className="text-6xl mb-4">💋</div>
-                      <p className="text-gray-400">No entries yet. Start tracking!</p>
-                    </div>
-                  ) : (
-                    <div className="space-y-3">
-                      {entries.map(entry => (
-                        <div
-                          key={entry.id}
-                          className={`p-4 rounded-lg border-2 transition-all ${
-                            entry.user === currentUser
-                              ? 'bg-purple-900/20 border-purple-500/30'
-                              : 'bg-pink-900/20 border-pink-500/30'
-                          }`}
-                        >
-                          <div className="flex justify-between items-start mb-2">
-                            <div>
-                              <h4 className="font-bold text-lg">{entry.position}</h4>
-                              <p className="text-sm text-gray-400">
-                                {new Date(entry.date).toLocaleDateString()} · {entry.user}
-                              </p>
-                            </div>
-                            <div className="flex items-center gap-3">
-                              <div className="flex items-center gap-1">
-                                <lucide.Heart size={16} className="text-pink-400 fill-pink-400" />
-                                <span className="font-bold">{entry.myRating}/10</span>
-                              </div>
-                              {entry.user === currentUser && (
-                                <button
-                                  onClick={() => deleteEntry(entry.id)}
-                                  className="text-red-400 hover:text-red-300 text-sm"
-                                >
-                                  Delete
-                                </button>
-                              )}
-                            </div>
-                          </div>
-                          {entry.duration && (
-                            <p className="text-sm text-gray-400 mb-1">⏱️ {entry.duration}</p>
-                          )}
-                          {entry.notes && (
-                            <p className="text-sm text-gray-300 mt-2">{entry.notes}</p>
-                          )}
-                          {entry.tags && entry.tags.length > 0 && (
-                            <div className="flex gap-2 mt-2 flex-wrap">
-                              {entry.tags.map((tag, idx) => (
-                                <span key={idx} className="text-xs bg-pink-600/30 px-2 py-1 rounded-full">
-                                  {tag}
-                                </span>
-                              ))}
-                            </div>
-                          )}
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              </>
-            )}
-
-            {currentSin !== 'lust' && (
-              <div className="bg-gradient-to-br from-gray-900/80 to-gray-800/80 backdrop-blur-sm p-12 rounded-xl border border-gray-700 text-center">
-                <h2 className="text-3xl font-bold mb-4">Coming Soon</h2>
-                <p className="text-gray-400">
-                  The {currentSin} tracker is under development and will be available in a future update.
-                </p>
-              </div>
-            )}
-          </div>
-        </div>
+      
+      return h('div', { className: 'min-h-screen bg-gradient-to-br from-purple-900 via-red-900 to-black text-white pb-20' },
+        h('div', { className: 'max-w-6xl mx-auto p-4' },
+          h('div', { className: 'flex justify-between items-center py-4 mb-4' },
+            h('div', null,
+              h('h1', { className: 'text-2xl font-bold' }, '7 Pleasures'),
+              h('p', { className: 'text-xs text-gray-400' }, 'Track what brings you joy'),
+              h('p', { className: 'text-sm text-purple-300' }, 'Tracking as: ' + currentUser)
+            ),
+            h('div', { className: 'flex gap-2' },
+              h('button', {
+                onClick: () => setShowSyncMenu(!showSyncMenu),
+                className: 'bg-gray-800 hover:bg-gray-700 p-2 rounded-lg text-2xl',
+                title: 'Sync Data'
+              }, '📤'),
+              h('button', {
+                onClick: () => { setShowUserSetup(true); setCurrentUser(''); },
+                className: 'bg-gray-800 hover:bg-gray-700 p-2 rounded-lg text-2xl',
+                title: 'Switch User'
+              }, '👤')
+            )
+          ),
+          
+          showSyncMenu && h('div', { className: 'bg-gray-900/95 p-4 rounded-xl border border-gray-700 mb-4' },
+            h('div', { className: 'flex justify-between items-center mb-4' },
+              h('h3', { className: 'font-bold' }, 'Sync Data'),
+              h('button', { onClick: () => setShowSyncMenu(false), className: 'text-2xl' }, '❌')
+            ),
+            h('div', { className: 'grid grid-cols-2 gap-3' },
+              h('button', {
+                onClick: exportData,
+                className: 'bg-gradient-to-r from-blue-600 to-cyan-600 py-3 rounded-lg font-semibold'
+              }, '⬇️ Export'),
+              h('label', { className: 'bg-gradient-to-r from-green-600 to-emerald-600 py-3 rounded-lg font-semibold text-center cursor-pointer' },
+                '⬆️ Import',
+                h('input', { type: 'file', accept: '.json', onChange: importData, className: 'hidden' })
+              )
+            ),
+            h('p', { className: 'text-xs text-gray-400 mt-3' }, 'Export and share with your partner to merge entries')
+          ),
+          
+          h('div', { className: 'mb-6' },
+            h('div', { className: 'bg-gradient-to-r from-red-600 to-pink-600 p-4 rounded-xl' },
+              h('h2', { className: 'text-xl font-bold' }, '💋 Intimacy Tracker')
+            )
+          ),
+          
+          stats && h('div', { className: 'grid grid-cols-2 lg:grid-cols-4 gap-3 mb-6' },
+            h('div', { className: 'bg-gradient-to-br from-red-600/20 to-pink-600/20 p-4 rounded-xl border border-red-500/30' },
+              h('h3', { className: 'text-xs font-semibold text-pink-300 mb-1' }, '📅 Total This Year'),
+              h('p', { className: 'text-2xl font-bold' }, stats.total)
+            ),
+            h('div', { className: 'bg-gradient-to-br from-purple-600/20 to-pink-600/20 p-4 rounded-xl border border-purple-500/30' },
+              h('h3', { className: 'text-xs font-semibold text-purple-300 mb-1' }, '💜 My Entries'),
+              h('p', { className: 'text-2xl font-bold' }, stats.myTotal),
+              h('p', { className: 'text-xs text-purple-300' }, 'Avg: ' + stats.myAvg + '/10')
+            ),
+            h('div', { className: 'bg-gradient-to-br from-pink-600/20 to-red-600/20 p-4 rounded-xl border border-pink-500/30' },
+              h('h3', { className: 'text-xs font-semibold text-pink-300 mb-1' }, '💖 ' + stats.partnerName),
+              h('p', { className: 'text-2xl font-bold' }, stats.partnerTotal),
+              h('p', { className: 'text-xs text-pink-300' }, 'Avg: ' + stats.partnerAvg + '/10')
+            ),
+            h('div', { className: 'bg-gradient-to-br from-red-600/20 to-orange-600/20 p-4 rounded-xl border border-red-500/30' },
+              h('h3', { className: 'text-xs font-semibold text-orange-300 mb-1' }, '📈 Monthly Avg'),
+              h('p', { className: 'text-2xl font-bold' }, (stats.total / (new Date().getMonth() + 1)).toFixed(1))
+            )
+          ),
+          
+          stats && stats.partnerTotal > 0 && h('div', { className: 'bg-gray-900/80 p-6 rounded-xl border border-gray-700 mb-6' },
+            h('h3', { className: 'text-xl font-bold mb-4' }, '📊 Comparison: What We Both Enjoy'),
+            h('div', { className: 'grid grid-cols-1 md:grid-cols-2 gap-6' },
+              h('div', null,
+                h('h4', { className: 'text-sm font-semibold text-purple-300 mb-3' }, 'My Top Rated'),
+                h('div', { className: 'space-y-2' },
+                  ...stats.myFavorites.map((fav, idx) =>
+                    h('div', { key: idx, className: 'bg-gray-800/50 p-3 rounded-lg' },
+                      h('div', { className: 'flex justify-between items-center' },
+                        h('span', { className: 'font-medium' }, fav.position),
+                        h('span', { className: 'text-purple-400 font-bold' }, '💜 ' + fav.myRating + '/10')
+                      )
+                    )
+                  )
+                )
+              ),
+              h('div', null,
+                h('h4', { className: 'text-sm font-semibold text-pink-300 mb-3' }, stats.partnerName + "'s Top Rated"),
+                h('div', { className: 'space-y-2' },
+                  ...stats.partnerFavorites.map((fav, idx) =>
+                    h('div', { key: idx, className: 'bg-gray-800/50 p-3 rounded-lg' },
+                      h('div', { className: 'flex justify-between items-center' },
+                        h('span', { className: 'font-medium' }, fav.position),
+                        h('span', { className: 'text-pink-400 font-bold' }, '💖 ' + fav.myRating + '/10')
+                      )
+                    )
+                  )
+                )
+              )
+            )
+          ),
+          
+          h('button', {
+            onClick: () => setShowAddForm(!showAddForm),
+            className: 'fixed bottom-6 right-6 bg-gradient-to-r from-pink-600 to-red-600 p-4 rounded-full shadow-2xl text-3xl z-50'
+          }, showAddForm ? '❌' : '➕'),
+          
+          showAddForm && h('div', { className: 'bg-gray-900/95 p-6 rounded-xl border border-gray-700 mb-6' },
+            h('h3', { className: 'text-2xl font-bold mb-4' }, 'New Entry'),
+            h('div', { className: 'mb-4' },
+              h('label', { className: 'block text-sm font-medium mb-2' }, 'Date'),
+              h('input', {
+                type: 'date',
+                value: newEntry.date,
+                onChange: (e) => setNewEntry({...newEntry, date: e.target.value}),
+                className: 'w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-white'
+              })
+            ),
+            h('div', { className: 'mb-4' },
+              h('label', { className: 'block text-sm font-medium mb-2' }, 'Position/Activity *'),
+              h('div', { className: 'grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-2' },
+                ...positions.map(pos =>
+                  h('button', {
+                    key: pos.name,
+                    type: 'button',
+                    onClick: () => setNewEntry({...newEntry, position: pos.name}),
+                    className: `p-3 rounded-lg border-2 transition-all ${newEntry.position === pos.name ? 'border-pink-500 bg-pink-600/30 scale-105' : 'border-gray-700 bg-gray-800'}`
+                  },
+                    h('div', { className: 'text-3xl mb-1' }, pos.emoji),
+                    h('div', { className: 'text-xs font-medium' }, pos.name)
+                  )
+                )
+              )
+            ),
+            newEntry.position === 'Other/Custom' && h('div', { className: 'mb-4' },
+              h('input', {
+                type: 'text',
+                placeholder: 'Enter custom position...',
+                onChange: (e) => setNewEntry({...newEntry, position: e.target.value || 'Other/Custom'}),
+                className: 'w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-white'
+              })
+            ),
+            h('div', { className: 'mb-4' },
+              h('label', { className: 'block text-sm font-medium mb-2' }, 'My Rating: ' + newEntry.myRating + '/10'),
+              h('div', { className: 'flex gap-1' },
+                ...[1,2,3,4,5,6,7,8,9,10].map(num =>
+                  h('button', {
+                    key: num,
+                    type: 'button',
+                    onClick: () => setNewEntry({...newEntry, myRating: num}),
+                    className: `flex-1 py-3 rounded-lg font-bold ${newEntry.myRating >= num ? 'bg-gradient-to-r from-pink-600 to-red-600 text-white' : 'bg-gray-800 text-gray-500'}`
+                  }, num)
+                )
+              )
+            ),
+            h('div', { className: 'mb-4' },
+              h('label', { className: 'block text-sm font-medium mb-2' }, 'Duration'),
+              h('div', { className: 'grid grid-cols-3 sm:grid-cols-5 gap-2' },
+                ...durationOptions.map(dur =>
+                  h('button', {
+                    key: dur,
+                    type: 'button',
+                    onClick: () => setNewEntry({...newEntry, duration: dur}),
+                    className: `py-2 px-3 rounded-lg text-sm font-medium ${newEntry.duration === dur ? 'bg-purple-600 text-white' : 'bg-gray-800 text-gray-300'}`
+                  }, dur)
+                )
+              )
+            ),
+            h('div', { className: 'mb-4' },
+              h('label', { className: 'block text-sm font-medium mb-2' }, 'Tags'),
+              h('div', { className: 'flex flex-wrap gap-2' },
+                ...tagOptions.map(tag =>
+                  h('button', {
+                    key: tag,
+                    type: 'button',
+                    onClick: () => {
+                      const tags = newEntry.tags || [];
+                      setNewEntry({...newEntry, tags: tags.includes(tag) ? tags.filter(t => t !== tag) : [...tags, tag]});
+                    },
+                    className: `py-2 px-4 rounded-full text-sm font-medium ${newEntry.tags?.includes(tag) ? 'bg-pink-600 text-white' : 'bg-gray-800 text-gray-300'}`
+                  }, (newEntry.tags?.includes(tag) ? '✓ ' : '') + tag)
+                )
+              )
+            ),
+            h('div', { className: 'mb-4' },
+              h('label', { className: 'block text-sm font-medium mb-2' }, 'Notes'),
+              h('textarea', {
+                value: newEntry.notes,
+                onChange: (e) => setNewEntry({...newEntry, notes: e.target.value}),
+                placeholder: 'Any details...',
+                rows: 3,
+                className: 'w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-white'
+              })
+            ),
+            h('button', {
+              onClick: addEntry,
+              className: 'w-full bg-gradient-to-r from-green-600 to-emerald-600 py-3 rounded-lg font-semibold'
+            }, '✅ Save Entry')
+          ),
+          
+          h('div', { className: 'bg-gray-900/80 p-6 rounded-xl border border-gray-700' },
+            h('h3', { className: 'text-xl font-bold mb-4' }, 'All Entries'),
+            entries.length === 0 ? 
+              h('div', { className: 'text-center py-12' },
+                h('div', { className: 'text-6xl mb-4' }, '💋'),
+                h('p', { className: 'text-gray-400' }, 'No entries yet. Start tracking!')
+              ) :
+              h('div', { className: 'space-y-3' },
+                ...entries.map(entry =>
+                  h('div', {
+                    key: entry.id,
+                    className: `p-4 rounded-lg border-2 ${entry.user === currentUser ? 'bg-purple-900/20 border-purple-500/30' : 'bg-pink-900/20 border-pink-500/30'}`
+                  },
+                    h('div', { className: 'flex justify-between items-start mb-2' },
+                      h('div', null,
+                        h('h4', { className: 'font-bold text-lg' }, entry.position),
+                        h('p', { className: 'text-sm text-gray-400' }, new Date(entry.date).toLocaleDateString() + ' · ' + entry.user)
+                      ),
+                      h('div', { className: 'flex items-center gap-3' },
+                        h('span', { className: 'font-bold' }, '💖 ' + entry.myRating + '/10'),
+                        entry.user === currentUser && h('button', {
+                          onClick: () => deleteEntry(entry.id),
+                          className: 'text-red-400 text-sm'
+                        }, 'Delete')
+                      )
+                    ),
+                    entry.duration && h('p', { className: 'text-sm text-gray-400 mb-1' }, '⏱️ ' + entry.duration),
+                    entry.notes && h('p', { className: 'text-sm text-gray-300 mt-2' }, entry.notes),
+                    entry.tags && entry.tags.length > 0 && h('div', { className: 'flex gap-2 mt-2 flex-wrap' },
+                      ...entry.tags.map((tag, idx) =>
+                        h('span', { key: idx, className: 'text-xs bg-pink-600/30 px-2 py-1 rounded-full' }, tag)
+                      )
+                    )
+                  )
+                )
+              )
+          )
+        )
       );
-    };
-
-    // Render the app
-    ReactDOM.render(<SinsTrackerPWA />, document.getElementById('root'));
-
-    // Initialize Lucide icons
-    lucide.createIcons();
+    }
+    
+    const root = ReactDOM.createRoot(document.getElementById('root'));
+    root.render(h(App));
   </script>
-
-  <!-- Service Worker Registration -->
+  
   <script>
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
-        navigator.serviceWorker.register('/sw.js')
-          .then(registration => console.log('SW registered'))
-          .catch(err => console.log('SW registration failed'));
+        navigator.serviceWorker.register('./sw.js').catch(() => {});
       });
     }
-
-    // Install prompt handling
-    let deferredPrompt;
-    const installPrompt = document.getElementById('install-prompt');
-    const installButton = document.getElementById('install-button');
-    const dismissButton = document.getElementById('dismiss-button');
-
-    window.addEventListener('beforeinstallprompt', (e) => {
-      e.preventDefault();
-      deferredPrompt = e;
-      
-      // Show install prompt after 3 seconds
-      setTimeout(() => {
-        if (!localStorage.getItem('install-dismissed')) {
-          installPrompt.style.display = 'block';
-        }
-      }, 3000);
-    });
-
-    installButton.addEventListener('click', async () => {
-      if (deferredPrompt) {
-        deferredPrompt.prompt();
-        const { outcome } = await deferredPrompt.userChoice;
-        deferredPrompt = null;
-        installPrompt.style.display = 'none';
-      }
-    });
-
-    dismissButton.addEventListener('click', () => {
-      installPrompt.style.display = 'none';
-      localStorage.setItem('install-dismissed', 'true');
-    });
-
-    // Hide install prompt if already installed
-    window.addEventListener('appinstalled', () => {
-      installPrompt.style.display = 'none';
-    });
   </script>
 </body>
 </html>
