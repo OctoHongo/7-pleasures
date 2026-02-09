@@ -54,6 +54,7 @@
       const [entries, setEntries] = useState([]);
       const [showAddForm, setShowAddForm] = useState(false);
       const [showSyncMenu, setShowSyncMenu] = useState(false);
+      const [showTrackerMenu, setShowTrackerMenu] = useState(false);
       const [newEntry, setNewEntry] = useState({
         date: new Date().toISOString().split('T')[0],
         position: '',
@@ -243,9 +244,22 @@
             h('p', { className: 'text-xs text-gray-400 mt-3' }, 'Export and share with your partner to merge entries')
           ),
           
-          h('div', { className: 'mb-6' },
+          h('div', { className: 'mb-6 relative' },
             h('div', { className: 'bg-gradient-to-r from-red-600 to-pink-600 p-4 rounded-xl' },
-              h('h2', { className: 'text-xl font-bold' }, '💋 Intimacy Tracker')
+              h('button', { 
+                onClick: () => setShowTrackerMenu(!showTrackerMenu),
+                className: 'text-xl font-bold flex items-center gap-2 w-full'
+              }, '💋 Intimacy Tracker'),
+              showTrackerMenu && h('div', { className: 'absolute top-full left-0 right-0 mt-2 bg-gray-900 border border-gray-700 rounded-xl shadow-lg z-50' },
+                h('button', {
+                  onClick: () => setShowTrackerMenu(false),
+                  className: 'w-full text-left px-4 py-3 hover:bg-gray-800 font-semibold'
+                }, '💋 Intimacy Tracker'),
+                h('a', {
+                  href: 'index-food-demo.html',
+                  className: 'block w-full text-left px-4 py-3 hover:bg-gray-800 font-semibold'
+                }, '🍽️ Food Tracker')
+              )
             )
           ),
           
